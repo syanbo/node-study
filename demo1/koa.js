@@ -2,8 +2,12 @@
 const Koa = require("koa");
 // 注意require('koa-router')返回的是函数:
 const router = require("koa-router")();
+const bodyParser = require("koa-bodyparser");
+
 // 创建一个Koa对象表示web app本身:
-const app = new Koa()
+const app = new Koa();
+
+app.use(bodyParser());
 
 app.use(async (ctx, next) => {
   console.log(`---${ctx.request.method} ${ctx.request.url}`); // 打印URL
@@ -21,6 +25,18 @@ router.get("/", async (ctx, next) => {
   await next();
   ctx.response.type = "text/html";
   ctx.response.body = "<h1>Hello, koa2!!</h1>";
+});
+
+router.post("/signin", async (ctx, next) => {
+  let name = ctx.request.body.name || "",
+    password = ctx.request.body.password || "";
+  console.log(`signin with name: ${name}, password: ${password}`);
+  if (name === "koa" && password === "12345") {
+    ctx.response.body = `<h1>Welcome, ${name}!</h1>`;
+  } else {
+    ctx.response.body = `<h1>Login failed!</h1>
+      <p><a href="/">Try again</a></p>`;
+  }
 });
 
 // add router middleware:
