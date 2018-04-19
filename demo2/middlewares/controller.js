@@ -1,43 +1,43 @@
-const fs = require('fs')
-const router = require('koa-router')()
+const fs = require("fs");
+const router = require("koa-router")();
 
 const setupMapping = mappingList => {
   for (const obj of mappingList) {
-    const { path, method, handler } = obj
+    const { path, method, handler } = obj;
     switch (method) {
-      case 'GET':
-        router.get(path, handler)
-        break
-      case 'POST':
-        router.post(path, handler)
-        break
-      case 'PUT':
-        router.put(path, handler)
-        break
-      case 'DELETE':
-        router.del(path, handler)
-        break
+      case "GET":
+        router.get(path, handler);
+        break;
+      case "POST":
+        router.post(path, handler);
+        break;
+      case "PUT":
+        router.put(path, handler);
+        break;
+      case "DELETE":
+        router.del(path, handler);
+        break;
       default:
-        console.log(`Invalid method: ${method} with path: ${path}`)
-        break
+        console.log(`Invalid method: ${method} with path: ${path}`);
+        break;
     }
   }
-}
+};
 
 const setupControllers = dir => {
-    // __dirname 为当前文件目录，demo2/middlewares/controller.js，故加上 ../ 来回到 /controllers/目录
-    const files = fs.readdirSync(`${__dirname}/../controllers`)
-    const js_files = files.filter(file => file.endsWith('.js'))
-  
-    for (const file of js_files) {
-      // mappingList 为每个文件中 module.exports 导出的路由 list
-      const mappingList = require(`${__dirname}/../controllers/${file}`)
-      setupMapping(mappingList)
-    }
+  // __dirname 为当前文件目录，demo2/middlewares/controller.js，故加上 ../ 来回到 /controllers/目录
+  const files = fs.readdirSync(`${__dirname}/../controllers`);
+  const js_files = files.filter(file => file.endsWith(".js"));
+
+  for (const file of js_files) {
+    // mappingList 为每个文件中 module.exports 导出的路由 list
+    const mappingList = require(`${__dirname}/../controllers/${file}`);
+    setupMapping(mappingList);
   }
-  
-  module.exports = dir => {
-    const controllers_dir = dir || 'controllers'
-    setupControllers(controllers_dir)
-    return router.routes()
-  }
+};
+
+module.exports = dir => {
+  const controllers_dir = dir || "controllers";
+  setupControllers(controllers_dir);
+  return router.routes();
+};
